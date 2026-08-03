@@ -19,9 +19,9 @@ public class AccountController {
     private final AccountService accountService;
 
     @GetMapping("/{account_id}")
-    public ResponseEntity<AccountResponseDto> fetchAccount(@PathVariable UUID account_id) {
+    public ResponseEntity<AccountResponseDto> fetchAccount(@PathVariable UUID accountId) {
 
-        return ResponseEntity.ok(accountService.fetchAccount(account_id));
+        return ResponseEntity.ok(accountService.fetchAccount(accountId));
     }
 
     @PostMapping
@@ -33,18 +33,18 @@ public class AccountController {
     }
 
     @PatchMapping("/{account_id}")
-    public ResponseEntity<AccountResponseDto> createAccount(@PathVariable UUID account_id, @RequestBody JsonNode accountRequestDto) {
+    public ResponseEntity<AccountResponseDto> createAccount(@PathVariable UUID accountId, @RequestBody JsonNode accountRequestDto) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(accountService.updateAccount(account_id, accountRequestDto));
+                .body(accountService.updateAccount(accountId, accountRequestDto));
     }
 
     @DeleteMapping("/{account_id}")
-    public ResponseEntity<AccountResponseDto> deleteAccount(@PathVariable UUID account_id) {
+    public HttpStatus deleteAccount(@PathVariable UUID accountId) {
 
-        accountService.deleteAccount(account_id);
+        accountService.deleteAccount(accountId);
 
-        return ResponseEntity.ok(null);
+        return HttpStatus.OK;
     }
 }

@@ -4,15 +4,15 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class InvalidAccountEntry extends RuntimeException {
+public class SpotNotFoundException extends RuntimeException {
 
     private final Integer code;
 
     private final String message;
 
-    public InvalidAccountEntry(String message) {
+    public SpotNotFoundException(String message) {
         super(message);
         this.message = message;
-        this.code = HttpStatus.BAD_REQUEST.value();
+        this.code = HttpStatus.NOT_FOUND.value();
     }
 }

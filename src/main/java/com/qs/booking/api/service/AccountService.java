@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,12 +23,17 @@ public class AccountService {
     private final AccountDtoMapper accountDtoMapper;
     private final ObjectMapper objectMapper;
 
-    public AccountResponseDto fetchAccount(UUID account_id) {
+    public AccountResponseDto fetchAccount(UUID accountId) {
 
-        Account existingAccount = accountRepository.findById(account_id)
-                .orElseThrow(() -> new AccountNotFoundException("Account with id: %s cannot be fetched.".formatted(account_id)));
+        Account fetchedAccount = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException("Account with id: %s cannot be fetched.".formatted(accountId)));
 
-        return accountDtoMapper.toDto(existingAccount);
+        return accountDtoMapper.toDto(fetchedAccount);
+    }
+
+    public Optional<Account> internalFetchAccount(UUID account_id) {
+
+        return accountRepository.findById(account_id);
     }
 
     @Transactional
@@ -43,10 +49,10 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountResponseDto updateAccount(UUID account_id, JsonNode brandNewAccountPart) {
+    public AccountResponseDto updateAccount(UUID accountId, JsonNode brandNewAccountPart) {
 
-        Account existingAccount = accountRepository.findById(account_id)
-                .orElseThrow(() -> new AccountNotFoundException("Account with id: %s cannot be fetched.".formatted(account_id)));
+        Account existingAccount = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException("Account with id: %s cannot be fetched.".formatted(accountId)));
 
         objectMapper.readerForUpdating(existingAccount).readValue(brandNewAccountPart);
 
@@ -58,12 +64,12 @@ public class AccountService {
     }
 
     @Transactional
-    public void deleteAccount(UUID account_id) {
+    public void deleteAccount(UUID accountId) {
 
-        accountRepository.findById(account_id)
-                .orElseThrow(() -> new AccountNotFoundException("Account with id: %s cannot be fetched.".formatted(account_id)));
+        accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountNotFoundException("Account with id: %s cannot be fetched.".formatted(accountId)));
 
-        accountRepository.deleteById(account_id);
+        accountRepository.deleteById(accountId);
     }
 
     private void validateAccountData(Account account) {
