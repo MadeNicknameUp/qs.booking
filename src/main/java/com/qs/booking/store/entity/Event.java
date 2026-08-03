@@ -34,11 +34,8 @@ public class Event {
     @Column(nullable = false)
     private Instant endingDate;
 
-    @Enumerated(EnumType.STRING)
-    private EventType eventType;
-
     @OneToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH })
-    @JoinColumn(name="author", referencedColumnName = "id")
+    @JoinColumn(name="author_id", referencedColumnName = "id")
     private Account author;
 
     @Column(nullable = false)
