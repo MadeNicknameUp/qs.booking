@@ -22,7 +22,7 @@ public class AccountService {
     private final AccountDtoMapper accountDtoMapper;
     private final ObjectMapper objectMapper;
 
-    private AccountResponseDto fetchAccount(UUID account_id) {
+    public AccountResponseDto fetchAccount(UUID account_id) {
 
         Account existingAccount = accountRepository.findById(account_id)
                 .orElseThrow(() -> new AccountNotFoundException("Account with id: %s cannot be fetched.".formatted(account_id)));
@@ -31,7 +31,7 @@ public class AccountService {
     }
 
     @Transactional
-    private AccountResponseDto createAccount(AccountRequestDto accountDto) {
+    public AccountResponseDto createAccount(AccountRequestDto accountDto) {
 
         Account newAccount = accountDtoMapper.toEntity(accountDto);
 
@@ -43,7 +43,7 @@ public class AccountService {
     }
 
     @Transactional
-    private AccountResponseDto updateAccount(UUID account_id, JsonNode brandNewAccountPart) {
+    public AccountResponseDto updateAccount(UUID account_id, JsonNode brandNewAccountPart) {
 
         Account existingAccount = accountRepository.findById(account_id)
                 .orElseThrow(() -> new AccountNotFoundException("Account with id: %s cannot be fetched.".formatted(account_id)));
@@ -58,7 +58,7 @@ public class AccountService {
     }
 
     @Transactional
-    private void deleteAccount(UUID account_id) {
+    public void deleteAccount(UUID account_id) {
 
         accountRepository.findById(account_id)
                 .orElseThrow(() -> new AccountNotFoundException("Account with id: %s cannot be fetched.".formatted(account_id)));
