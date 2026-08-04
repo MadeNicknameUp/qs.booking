@@ -1,7 +1,85 @@
 package com.qs.booking.api.service;
 
-/*
-    See high-level-design file.
- */
+import com.qs.booking.api.dto.EventDtoMapper;
+import com.qs.booking.api.dto.EventRequestDto;
+import com.qs.booking.api.dto.EventResponseDto;
+import com.qs.booking.api.error.unit.AccountNotFoundException;
+import com.qs.booking.api.error.unit.EventNotFoundException;
+import com.qs.booking.store.entity.Account;
+import com.qs.booking.store.entity.Event;
+import com.qs.booking.store.repository.EventRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
 public class EventService {
+
+    private final EventRepository eventRepository;
+    private final AccountService accountService;
+    private final EventDtoMapper eventDtoMapper;
+    private final ObjectMapper objectMapper;
+
+    public List<EventResponseDto> getUpcomingEvents(Integer pageNumber, Integer pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<Event> upcomingEvents = eventRepository.findAllUpcomingEvents(pageable);
+
+        return upcomingEvents
+                .stream()
+                .map(eventDtoMapper::toDto)
+                .toList();
+    }
+
+    public EventResponseDto fetchEvent(UUID eventId) {
+
+        Event fetchedEvent = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException("Event with id: %s not found.".formatted(eventId)));
+
+        return eventDtoMapper.toDto(fetchedEvent);
+    }
+
+    @Transactional
+    public EventResponseDto createEvent(UUID accountId, EventRequestDto eventRequestDto) {
+
+        // TODO: replace with gRPC later
+        Account fetchedAccount = accountService.internalFetchAccount(accountId)
+                .orElseThrow(() -> new AccountNotFoundException("Account with id: %s not found.".formatted(accountId)));
+
+        Event mappedEvent = eventDtoMapper.toEntity(eventRequestDto);
+        mappedEvent.setAuthor(fetchedAccount);
+
+        final Event savedEvent = eventRepository.saveAndFlush(mappedEvent);
+
+        return eventDtoMapper.toDto(savedEvent);
+    }
+
+    @Transactional
+    public EventResponseDto updateEvent(UUID eventId, JsonNode brandNewAccountPart) {
+
+        Event fetchedEvent = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EventNotFoundException("Event with id: %s cannot not found.".formatted(eventId)));
+
+        objectMapper.readerForUpdating(fetchedEvent).readValue(brandNewAccountPart);
+
+        validateEventData(fetchedEvent);
+
+        final Event savedEvent = eventRepository.saveAndFlush(fetchedEvent);
+
+        return eventDtoMapper.toDto(savedEvent);
+    }
+
+    private void validateEventData(Event event) {
+        // TODO: Create data validation strategy & requirements
+    }
 }

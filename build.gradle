@@ -24,6 +24,13 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+// Redis Client dependencies
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	testImplementation 'org.springframework.boot:spring-boot-starter-data-redis-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
 // PostgreSQL dependenciess
 dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
