@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1/bookings")
 @RequiredArgsConstructor
 public class BookingController {
 
@@ -36,7 +36,7 @@ public class BookingController {
     }
 
     @PostMapping("/{account_id}")
-    public ResponseEntity<BookingResponseDto> createBooking(BookingRequestDto bookingRequestDto) {
+    public ResponseEntity<BookingResponseDto> createBooking(@RequestBody BookingRequestDto bookingRequestDto) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

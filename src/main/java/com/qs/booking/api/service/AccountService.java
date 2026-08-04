@@ -43,7 +43,7 @@ public class AccountService {
 
         validateAccountData(newAccount);
 
-        final Account savedAccount = accountRepository.save(newAccount);
+        final Account savedAccount = accountRepository.saveAndFlush(newAccount);
 
         return accountDtoMapper.toDto(savedAccount);
     }

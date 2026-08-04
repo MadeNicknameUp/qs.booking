@@ -23,16 +23,20 @@ public class BookingDtoMapper {
                 .builder()
                 .id(booking.getId().toString())
                 .state(booking.getState().toString())
-                .processedAt(booking.getProcessedAt().toString())
-                .updatedAt(booking.getUpdatedAt().toString())
-                .createdAt(booking.getCreatedAt().toString())
+//                .processedAt(booking.getProcessedAt().toString())
+//                .updatedAt(booking.getUpdatedAt().toString())
+//                .createdAt(booking.getCreatedAt().toString())
+                // TODO: Replace this later.
+                .processedAt("")
+                .updatedAt("")
+                .createdAt("")
                 .build();
     }
 
     public Booking toEntity(BookingRequestDto bookingRequestDto) {
 
         Booking booking = new Booking();
-        booking.setState(BookingState.valueOf(bookingRequestDto.getState()));
+        booking.setState(BookingState.PROCESSING);
         booking.setIdempotencyKey(UUID.fromString(bookingRequestDto.getIdempotencyKey()));
         booking.setSpot(spotRepository.findById(UUID.fromString(bookingRequestDto.getSpotId()))
                 .orElseThrow(() -> new SpotNotFoundException("Spot with id %s not found.".formatted(bookingRequestDto.getSpotId())))

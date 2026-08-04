@@ -9,8 +9,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class BookingRequestDto {
 
-    private String state;
-
     private String spotId;
 
     private String idempotencyKey;

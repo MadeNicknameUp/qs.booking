@@ -3,6 +3,7 @@ package com.qs.booking.store.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
 
@@ -13,7 +14,8 @@ import java.util.UUID;
 public class AccountRole {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
+    @UuidGenerator
     private UUID id;
 
     @JoinColumn(nullable=false)
@@ -24,6 +26,6 @@ public class AccountRole {
     private Event event;
 
     @OneToOne
-    @JoinColumn(name="event_id", referencedColumnName = "id")
+    @JoinColumn(name="account_id", referencedColumnName = "id")
     private Account account;
 }

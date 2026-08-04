@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -18,10 +19,11 @@ import java.util.UUID;
 public class Spot {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue
+    @UuidGenerator
     private UUID id;
 
-    private Integer price;
+    private Double price;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -30,7 +32,7 @@ public class Spot {
     @OneToOne
     @JoinColumn(
             name="event_id",
-            nullable = false,
+//            nullable = false,
             updatable = false,
             referencedColumnName="id"
     )

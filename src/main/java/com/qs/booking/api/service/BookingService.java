@@ -6,6 +6,8 @@ import com.qs.booking.api.error.unit.BookingNotFoundException;
 import com.qs.booking.api.mapper.BookingDtoMapper;
 import com.qs.booking.store.entity.Account;
 import com.qs.booking.store.entity.Booking;
+import com.qs.booking.store.entity.BookingState;
+import com.qs.booking.store.entity.SpotState;
 import com.qs.booking.store.repository.BookingRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +37,7 @@ public class BookingService {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        Page<Booking> bookingHistory = bookingRepository.findAllByAccount(fetchedAccount, pageable);
+        Page<Booking> bookingHistory = bookingRepository.findAllByPurchaser(fetchedAccount, pageable);
 
         return bookingHistory
                 .stream()
@@ -56,9 +58,12 @@ public class BookingService {
 
         Booking mappedBooking = bookingDtoMapper.toEntity(bookingRequestDto);
 
+        mappedBooking.setState(BookingState.PROCESSING);
+        mappedBooking.getSpot().setState(SpotState.PENDING);
+
         final Booking createdBooking = bookingRepository.save(mappedBooking);
 
-        // TODO: This is a provider. This methods is going to be sending into the queue.
+        // TODO: This is a provider. This methods is going to be posting into the queue.
 
         return bookingDtoMapper.toDto(createdBooking);
     }

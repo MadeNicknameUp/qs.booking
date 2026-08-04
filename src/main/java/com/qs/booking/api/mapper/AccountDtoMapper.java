@@ -13,6 +13,7 @@ public class AccountDtoMapper {
 
         return AccountResponseDto
                 .builder()
+                .id(account.getId().toString())
                 .profilePictureUrl(account.getProfilePictureUrl())
                 .email(account.getEmail())
                 .firstName(account.getFirstName())

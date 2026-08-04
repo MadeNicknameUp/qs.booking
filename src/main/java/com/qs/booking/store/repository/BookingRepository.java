@@ -12,5 +12,5 @@ import java.util.UUID;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, UUID> {
 
-    Page<Booking> findAllByAccount(Account fetchedAccount, Pageable pageable);
+    Page<Booking> findAllByPurchaser(Account fetchedAccount, Pageable pageable);
 }
