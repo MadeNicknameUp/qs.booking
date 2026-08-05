@@ -29,21 +29,21 @@ public class EventController {
     }
 
     @GetMapping("/{event_id}")
-    public ResponseEntity<EventResponseDto> fetchEvent(@PathVariable UUID eventId) {
+    public ResponseEntity<EventResponseDto> fetchEvent(@PathVariable(name="event_id") UUID eventId) {
         return ResponseEntity
                 .ok(eventService.fetchEvent(eventId));
     }
 
-    @PostMapping("/{event_id}")
-    public ResponseEntity<EventResponseDto> createEvent(@PathVariable UUID eventId,
+    @PostMapping("/{account_id}")
+    public ResponseEntity<EventResponseDto> createEvent(@PathVariable(name="account_id") UUID accountId,
                                                         @RequestBody EventRequestDto eventRequestDto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(eventService.createEvent(eventId, eventRequestDto));
+                .body(eventService.createEvent(accountId, eventRequestDto));
     }
 
     @PatchMapping("/{event_id}")
-    public ResponseEntity<EventResponseDto> updateEvent(@PathVariable UUID eventId,
+    public ResponseEntity<EventResponseDto> updateEvent(@PathVariable(name="event_id") UUID eventId,
                                                         @RequestBody JsonNode eventRequestDto) {
         return ResponseEntity.ok(eventService.updateEvent(eventId, eventRequestDto));
     }

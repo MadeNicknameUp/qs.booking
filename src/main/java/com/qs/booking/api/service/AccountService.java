@@ -4,7 +4,7 @@ import com.qs.booking.api.dto.AccountRequestDto;
 import com.qs.booking.api.dto.AccountResponseDto;
 import com.qs.booking.api.error.unit.AccountNotFoundException;
 import com.qs.booking.api.mapper.AccountDtoMapper;
-import com.qs.booking.store.entity.Account;
+import com.qs.booking.store.model.Account;
 import com.qs.booking.store.repository.AccountRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

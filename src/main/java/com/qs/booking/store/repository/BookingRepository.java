@@ -1,7 +1,7 @@
 package com.qs.booking.store.repository;
 
-import com.qs.booking.store.entity.Account;
-import com.qs.booking.store.entity.Booking;
+import com.qs.booking.store.model.Account;
+import com.qs.booking.store.model.Booking;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

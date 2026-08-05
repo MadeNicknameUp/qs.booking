@@ -1,45 +1,81 @@
 services:
-  rabbitmq:
-    image: rabbitmq:management
-    container_name: booking-rabbitmq
-    restart: unless-stopped
-    ports:
-      - "5672:5672"
-      - "15672:15672"
+  redis:
+    image: redis:latest
+    container_name: redis
     environment:
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: admin
-      RABBITMQ_DEFAULT_VHOST: /dev
-      RABBITMQ_PLUGINS: rabbitmq_prometheus
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_USER_PASSWORD=${REDIS_USER_PASSWORD}
+    ports:
+      - "6380:6379"
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-      - rabbitmq_log:/var/log/rabbitmq
+      - ./redis_data:/data
     deploy:
       resources:
         limits:
-          memory: 1G
+          cpus: '0.50'
+          memory: 512M
         reservations:
-          memory: 500MB
+          cpus: '0.25'
+          memory: 256M
+    command: >
+      sh -c '
+        mkdir -p /usr/local/etc/redis &&
+        echo "bind 0.0.0.0" > /usr/local/etc/redis/redis.conf &&
+        echo "requirepass $REDIS_PASSWORD" >> /usr/local/etc/redis/redis.conf &&
+        echo "appendonly yes" >> /usr/local/etc/redis/redis.conf &&
+        echo "appendfsync everysec" >> /usr/local/etc/redis/redis.conf &&
+        echo "user default on nopass ~* +@all" > /usr/local/etc/redis/users.acl &&
+        echo "user $REDIS_USER on >$REDIS_USER_PASSWORD ~* +@all" >> /usr/local/etc/redis/users.acl &&
+        redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl
+      '
     healthcheck:
-      test: rabbitmq-diagnostics -q ping
-      interval: 20s
+      test: ["CMD", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
+      interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 40s
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:rw
+      - ./postgres/postgres.conf:/etc/postgresql/postgresql.conf:ro
+    command: [ "postgres", "-c", "config_file=/etc/postgresql/postgresql.conf", "-c", "log_statement=none", "-c", "log_min_duration_statement=1000", "-c", "log_connections=on", "-c", "log_disconnections=on" ]
+    healthcheck:
+      test: [ "CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER:-postgres}" -d "$${POSTGRES_DB:-postgres}" -h localhost || exit 1' ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+    stop_grace_period: 120s
     networks:
       - backend
 
-  postgres:
-    image: bitnami/postgresql:latest
-    container_name: postgres
-    environment:
-      POSTGRESQL_DATABASE: test-db
-      POSTGRESQL_USERNAME: admin
-      POSTGRESQL_PASSWORD: admin
+  pgadmin:
+    image: elestio/pgadmin:latest
+    container_name: pgadmin
+    restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "5050:8080"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${ADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${ADMIN_PASSWORD}
+      PGADMIN_LISTEN_PORT: 8080
     volumes:
-      - postgres_test_db_data:/var/lib/postgresql/data
+      - pgadmin_data:/var/lib/pgadmin:rw
+    depends_on:
+      - postgres
     networks:
       - backend
 
@@ -48,6 +84,6 @@ networks:
     driver: bridge
 
 volumes:
-  rabbitmq_data:
-  rabbitmq_log:
-  postgres_test_db_data:
+  redis_data:
+  pgadmin_data:
+  postgres_data:

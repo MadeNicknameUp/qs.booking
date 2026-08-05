@@ -1,7 +1,7 @@
 package com.qs.booking.api.dto;
 
 import com.qs.booking.api.mapper.AccountDtoMapper;
-import com.qs.booking.store.entity.Event;
+import com.qs.booking.store.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.qs.booking.store.entity;
+package com.qs.booking.store.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,34 +12,31 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name="app_account")
+@Table(name="app_spot")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Account {
+public class Spot {
 
     @Id
     @GeneratedValue
     @UuidGenerator
     private UUID id;
 
-    private String profilePictureUrl;
+    private Double price;
 
-    @Column(nullable=false, unique=true)
-    private String email;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SpotState state;
 
-    private String firstName;
-
-    private String lastName;
-
-    @Column(nullable=false)
-    private String nickname;
-
-    @Column(nullable=false)
-    private String password;
-
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "account")
-    private AccountRole role;
+    @OneToOne
+    @JoinColumn(
+            name="event_id",
+//            nullable = false,
+            updatable = false,
+            referencedColumnName="id"
+    )
+    private Event event;
 
     @CreationTimestamp
     private Instant createdAt;

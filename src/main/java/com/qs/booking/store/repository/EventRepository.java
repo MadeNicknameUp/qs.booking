@@ -1,6 +1,6 @@
 package com.qs.booking.store.repository;
 
-import com.qs.booking.store.entity.Event;
+import com.qs.booking.store.model.Event;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

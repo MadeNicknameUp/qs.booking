@@ -1,4 +1,4 @@
-package com.qs.booking.store.entity;
+package com.qs.booking.store.model;
 
 public enum BookingState {
     PROCESSING,

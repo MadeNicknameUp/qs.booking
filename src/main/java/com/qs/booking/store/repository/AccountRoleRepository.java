@@ -1,6 +1,6 @@
 package com.qs.booking.store.repository;
 
-import com.qs.booking.store.entity.AccountRole;
+import com.qs.booking.store.model.AccountRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

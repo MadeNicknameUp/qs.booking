@@ -5,8 +5,8 @@ import com.qs.booking.api.dto.EventRequestDto;
 import com.qs.booking.api.dto.EventResponseDto;
 import com.qs.booking.api.error.unit.AccountNotFoundException;
 import com.qs.booking.api.error.unit.EventNotFoundException;
-import com.qs.booking.store.entity.Account;
-import com.qs.booking.store.entity.Event;
+import com.qs.booking.store.model.Account;
+import com.qs.booking.store.model.Event;
 import com.qs.booking.store.repository.EventRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -28,12 +30,29 @@ public class EventService {
     private final AccountService accountService;
     private final EventDtoMapper eventDtoMapper;
     private final ObjectMapper objectMapper;
+    private final EventCaching eventCaching;
 
     public List<EventResponseDto> getUpcomingEvents(Integer pageNumber, Integer pageSize) {
+
+        List<Event> cachedUpcomingEvents = eventCaching.getFeed(pageNumber);
+
+        if (!cachedUpcomingEvents.isEmpty()) {
+            return cachedUpcomingEvents
+                    .stream()
+                    .map(eventDtoMapper::toDto)
+                    .toList();
+        }
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
         Page<Event> upcomingEvents = eventRepository.findAllUpcomingEvents(pageable);
+
+        // TODO: Replace it with @Scheduled job???
+        Map<String, Event> events = new HashMap<>();
+
+        upcomingEvents.stream().forEach((event) -> events.put(event.getId().toString(), event));
+
+        eventCaching.cache(pageNumber, events);
 
         return upcomingEvents
                 .stream()
@@ -43,8 +62,15 @@ public class EventService {
 
     public EventResponseDto fetchEvent(UUID eventId) {
 
-        Event fetchedEvent = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EventNotFoundException("Event with id: %s not found.".formatted(eventId)));
+        Event fetchedEvent = eventCaching.get(eventId.toString()).orElseGet(() -> {
+
+            Event event = eventRepository.findById(eventId)
+                    .orElseThrow(() -> new EventNotFoundException("Event with id: %s not found.".formatted(eventId)));
+
+            eventCaching.cache(eventId.toString(), event);
+
+            return event;
+        });
 
         return eventDtoMapper.toDto(fetchedEvent);
     }
@@ -75,6 +101,8 @@ public class EventService {
         validateEventData(fetchedEvent);
 
         final Event savedEvent = eventRepository.saveAndFlush(fetchedEvent);
+
+        eventCaching.evict(eventId.toString());
 
         return eventDtoMapper.toDto(savedEvent);
     }

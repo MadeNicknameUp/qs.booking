@@ -1,4 +1,4 @@
-package com.qs.booking.store.entity;
+package com.qs.booking.store.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,35 +12,41 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name="app_spot")
+@Table(name="app_booking")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Spot {
+public class Booking {
 
     @Id
     @GeneratedValue
     @UuidGenerator
     private UUID id;
 
-    private Double price;
-
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private SpotState state;
+    private BookingState state;
 
-    @OneToOne
-    @JoinColumn(
-            name="event_id",
-//            nullable = false,
+    @OneToOne(optional = false)
+    @JoinColumn(name = "purchaser_id", referencedColumnName = "id")
+    private Account purchaser;
+
+    @OneToOne(optional = false)
+    @JoinColumn(name="spot_id", referencedColumnName="id")
+    private Spot spot;
+
+    @Column(
+            nullable = false,
             updatable = false,
-            referencedColumnName="id"
+            unique = true
     )
-    private Event event;
+    private UUID idempotencyKey;
+
+    private Instant processedAt;
 
     @CreationTimestamp
     private Instant createdAt;
 
     @UpdateTimestamp
     private Instant updatedAt;
+
 }
