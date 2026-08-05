@@ -1,7 +1,7 @@
 package com.qs.booking.api.contoller;
 
-import com.qs.booking.api.dto.EventRequestDto;
-import com.qs.booking.api.dto.EventResponseDto;
+import com.qs.booking.api.dto.external.EventRequestDto;
+import com.qs.booking.api.dto.external.EventResponseDto;
 import com.qs.booking.api.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

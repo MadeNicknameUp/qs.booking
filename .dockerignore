@@ -1,0 +1,12 @@
+.git
+.gitignore
+.env
+.idea
+build
+target
+out
+*.log
+Dockerfile
+docker-compose.yml
+.configuration
+.redis_data

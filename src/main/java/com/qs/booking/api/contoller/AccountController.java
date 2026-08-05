@@ -1,7 +1,7 @@
 package com.qs.booking.api.contoller;
 
-import com.qs.booking.api.dto.AccountRequestDto;
-import com.qs.booking.api.dto.AccountResponseDto;
+import com.qs.booking.api.dto.external.AccountRequestDto;
+import com.qs.booking.api.dto.external.AccountResponseDto;
 import com.qs.booking.api.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

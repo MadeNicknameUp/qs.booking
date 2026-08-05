@@ -3,9 +3,12 @@ spring:
     name: booking
 
   datasource:
-    url: "jdbc:postgresql://localhost:5432/test-db"
-    username: "admin"
-    password: "admin"
+#    url: "jdbc:postgresql://localhost:5432/test-db"
+#    username: "admin"
+#    password: "admin"
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -18,8 +21,31 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 redis:
-  host: "localhost"
-  port: 6380
-  username: "application"
-  #   TODO: Replace with injecting once tested.
-  password: "application"
+#  host: "localhost"
+#  port: 6380
+#  username: "application"
+#  #   TODO: Replace with injecting once tested.
+#  password: "application"
+  host: ${REDIS_HOST}
+  port: ${REDIS_PORT}
+  username: ${REDIS_USER}
+  password: ${REDIS_USER_PASSWORD}
+
+rabbitmq:
+  config:
+#    host: "localhost"
+#    port: 5672
+#    username: "admin"
+#    password: "admin"
+#    virtual-host: "/dev"
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
+    virtual-host: ${RABBITMQ_VHOST}
+  spot-queue:
+    name: "spot-order"
+    routing:
+      key: "place-spot-order"
+  exchange:
+    name: "main-exchange"

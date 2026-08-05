@@ -1,4 +1,4 @@
-package com.qs.booking.api.dto;
+package com.qs.booking.api.dto.external;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +7,10 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class AccountRequestDto {
+public class AccountResponseDto {
+
+    // hashed id
+    private String id;
 
     private String profilePictureUrl;
 
@@ -19,6 +22,10 @@ public class AccountRequestDto {
 
     private String nickname;
 
-    // password hash
-    private String password;
+    // TODO: Needs to be inspected one more time.
+//    private String role;
+
+    private String createdAt;
+
+    private String updatedAt;
 }

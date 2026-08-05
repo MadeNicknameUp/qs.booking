@@ -1,7 +1,7 @@
 package com.qs.booking.api.service;
 
-import com.qs.booking.api.dto.AccountRequestDto;
-import com.qs.booking.api.dto.AccountResponseDto;
+import com.qs.booking.api.dto.external.AccountRequestDto;
+import com.qs.booking.api.dto.external.AccountResponseDto;
 import com.qs.booking.api.error.unit.AccountNotFoundException;
 import com.qs.booking.api.mapper.AccountDtoMapper;
 import com.qs.booking.store.model.Account;

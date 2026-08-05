@@ -1,4 +1,4 @@
-package com.qs.booking.api.dto;
+package com.qs.booking.api.dto.external;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,4 +20,6 @@ public class EventRequestDto {
     private String endingDate;
 
     private Integer spotsAmount;
+
+    private Double pricePerSpot;
 }

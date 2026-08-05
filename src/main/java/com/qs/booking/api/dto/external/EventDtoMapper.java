@@ -1,17 +1,17 @@
-package com.qs.booking.api.dto;
+package com.qs.booking.api.dto.external;
 
 import com.qs.booking.api.mapper.AccountDtoMapper;
 import com.qs.booking.store.model.Event;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 
 @Component
+@RequiredArgsConstructor
 public class EventDtoMapper {
 
-    @Autowired
-    private AccountDtoMapper accountDtoMapper;
+    private final AccountDtoMapper accountDtoMapper;
 
     public EventResponseDto toDto(Event event) {
 

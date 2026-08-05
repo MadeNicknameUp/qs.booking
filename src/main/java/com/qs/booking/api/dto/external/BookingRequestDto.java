@@ -1,4 +1,4 @@
-package com.qs.booking.api.dto;
+package com.qs.booking.api.dto.external;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

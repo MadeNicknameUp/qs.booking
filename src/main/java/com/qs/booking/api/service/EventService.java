@@ -1,10 +1,11 @@
 package com.qs.booking.api.service;
 
-import com.qs.booking.api.dto.EventDtoMapper;
-import com.qs.booking.api.dto.EventRequestDto;
-import com.qs.booking.api.dto.EventResponseDto;
+import com.qs.booking.api.dto.external.EventDtoMapper;
+import com.qs.booking.api.dto.external.EventRequestDto;
+import com.qs.booking.api.dto.external.EventResponseDto;
 import com.qs.booking.api.error.unit.AccountNotFoundException;
 import com.qs.booking.api.error.unit.EventNotFoundException;
+import com.qs.booking.api.mapper.SpotDtoMapper;
 import com.qs.booking.store.model.Account;
 import com.qs.booking.store.model.Event;
 import com.qs.booking.store.repository.EventRepository;
@@ -29,8 +30,10 @@ public class EventService {
     private final EventRepository eventRepository;
     private final AccountService accountService;
     private final EventDtoMapper eventDtoMapper;
+    private final SpotDtoMapper spotDtoMapper;
     private final ObjectMapper objectMapper;
     private final EventCaching eventCaching;
+    private final EventProducer eventProducer;
 
     public List<EventResponseDto> getUpcomingEvents(Integer pageNumber, Integer pageSize) {
 
@@ -86,6 +89,8 @@ public class EventService {
         mappedEvent.setAuthor(fetchedAccount);
 
         final Event savedEvent = eventRepository.saveAndFlush(mappedEvent);
+
+        eventProducer.postOrder(spotDtoMapper.toInternalDto(savedEvent, eventRequestDto));
 
         return eventDtoMapper.toDto(savedEvent);
     }
