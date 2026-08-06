@@ -21,7 +21,7 @@ public class EventResponseDto {
 
     private String endingDate;
 
-    private AccountResponseDto author;
+    private String authorId;
 
     private Integer spotsAmount;
 

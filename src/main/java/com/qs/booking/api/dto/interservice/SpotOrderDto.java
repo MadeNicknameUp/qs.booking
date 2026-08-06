@@ -1,9 +1,10 @@
 package com.qs.booking.api.dto.interservice;
 
-import com.qs.booking.store.model.Event;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.UUID;
 
 @Data
 @Builder
@@ -14,5 +15,5 @@ public class SpotOrderDto {
 
     private Double pricePerSpot;
 
-    private Event event;
+    private UUID eventId;
 }

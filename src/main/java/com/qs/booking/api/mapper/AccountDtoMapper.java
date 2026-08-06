@@ -2,7 +2,7 @@ package com.qs.booking.api.mapper;
 
 import com.qs.booking.api.dto.external.AccountRequestDto;
 import com.qs.booking.api.dto.external.AccountResponseDto;
-import com.qs.booking.api.error.unit.InvalidAccountEntryException;
+import com.qs.booking.api.error.unit.InvalidCreationRequestException;
 import com.qs.booking.store.model.Account;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +38,7 @@ public class AccountDtoMapper {
             account.setPassword(accountDto.getPassword());
 
         } catch (Exception ex) {
-            throw new InvalidAccountEntryException("Account object cannot be created due to invalid data.");
+            throw new InvalidCreationRequestException("Account object cannot be created due to invalid data.");
         }
 
         return account;

@@ -47,5 +47,9 @@ rabbitmq:
     name: "spot-order"
     routing:
       key: "place-spot-order"
+  booking-queue:
+    name: "booking-order"
+    routing:
+      key: "place-booking-order"
   exchange:
     name: "main-exchange"

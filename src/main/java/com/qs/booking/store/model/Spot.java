@@ -29,14 +29,7 @@ public class Spot {
     @Column(nullable = false)
     private SpotState state;
 
-    @OneToOne
-    @JoinColumn(
-            name="event_id",
-//            nullable = false,
-            updatable = false,
-            referencedColumnName="id"
-    )
-    private Event event;
+    private UUID eventId;
 
     @CreationTimestamp
     private Instant createdAt;

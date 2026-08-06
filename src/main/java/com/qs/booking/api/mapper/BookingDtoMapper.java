@@ -24,12 +24,10 @@ public class BookingDtoMapper {
                 .id(booking.getId().toString())
                 .state(booking.getState().toString())
 //                .processedAt(booking.getProcessedAt().toString())
-//                .updatedAt(booking.getUpdatedAt().toString())
-//                .createdAt(booking.getCreatedAt().toString())
+                .updatedAt(booking.getUpdatedAt().toString())
+                .createdAt(booking.getCreatedAt().toString())
                 // TODO: Replace this later.
                 .processedAt("")
-                .updatedAt("")
-                .createdAt("")
                 .build();
     }
 

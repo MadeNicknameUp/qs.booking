@@ -1,6 +1,7 @@
-package com.qs.booking.api.dto.external;
+package com.qs.booking.api.mapper;
 
-import com.qs.booking.api.mapper.AccountDtoMapper;
+import com.qs.booking.api.dto.external.EventRequestDto;
+import com.qs.booking.api.dto.external.EventResponseDto;
 import com.qs.booking.store.model.Event;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -10,8 +11,6 @@ import java.time.Instant;
 @Component
 @RequiredArgsConstructor
 public class EventDtoMapper {
-
-    private final AccountDtoMapper accountDtoMapper;
 
     public EventResponseDto toDto(Event event) {
 
@@ -23,7 +22,7 @@ public class EventDtoMapper {
                 .description(event.getDescription())
                 .startingDate(event.getStartingDate().toString())
                 .endingDate(event.getEndingDate().toString())
-                .author(accountDtoMapper.toDto(event.getAuthor()))
+                .authorId(event.getAuthorId().toString())
                 .spotsAmount(event.getSpotsAmount())
                 .creationTimestamp(event.getCreationTimestamp().toString())
                 .updateTimestamp(event.getCreationTimestamp().toString())

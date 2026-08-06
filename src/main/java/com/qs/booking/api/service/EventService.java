@@ -1,6 +1,6 @@
 package com.qs.booking.api.service;
 
-import com.qs.booking.api.dto.external.EventDtoMapper;
+import com.qs.booking.api.mapper.EventDtoMapper;
 import com.qs.booking.api.dto.external.EventRequestDto;
 import com.qs.booking.api.dto.external.EventResponseDto;
 import com.qs.booking.api.error.unit.AccountNotFoundException;
@@ -86,11 +86,11 @@ public class EventService {
                 .orElseThrow(() -> new AccountNotFoundException("Account with id: %s not found.".formatted(accountId)));
 
         Event mappedEvent = eventDtoMapper.toEntity(eventRequestDto);
-        mappedEvent.setAuthor(fetchedAccount);
+        mappedEvent.setAuthorId(fetchedAccount.getId());
 
         final Event savedEvent = eventRepository.saveAndFlush(mappedEvent);
 
-        eventProducer.postOrder(spotDtoMapper.toInternalDto(savedEvent, eventRequestDto));
+        eventProducer.postOrder(spotDtoMapper.toInternalDto(savedEvent.getId(), eventRequestDto));
 
         return eventDtoMapper.toDto(savedEvent);
     }

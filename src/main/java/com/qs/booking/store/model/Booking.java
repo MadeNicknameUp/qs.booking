@@ -26,9 +26,8 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private BookingState state;
 
-    @OneToOne(optional = false)
-    @JoinColumn(name = "purchaser_id", referencedColumnName = "id")
-    private Account purchaser;
+    @Column(nullable = false, updatable = false)
+    private UUID purchaserId;
 
     @OneToOne(optional = false)
     @JoinColumn(name="spot_id", referencedColumnName="id")

@@ -3,7 +3,7 @@ services:
     image: redis:latest
     container_name: redis
     environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PASSWORD=${REDIS_DEFAULT_PASSWORD}
       - REDIS_USER=${REDIS_USER}
       - REDIS_USER_PASSWORD=${REDIS_USER_PASSWORD}
     ports:
@@ -22,7 +22,7 @@ services:
       sh -c '
         mkdir -p /usr/local/etc/redis &&
         echo "bind 0.0.0.0" > /usr/local/etc/redis/redis.conf &&
-        echo "requirepass $REDIS_PASSWORD" >> /usr/local/etc/redis/redis.conf &&
+        echo "requirepass $REDIS_DEFAULT_PASSWORD" >> /usr/local/etc/redis/redis.conf &&
         echo "appendonly yes" >> /usr/local/etc/redis/redis.conf &&
         echo "appendfsync everysec" >> /usr/local/etc/redis/redis.conf &&
         echo "user default on nopass ~* +@all" > /usr/local/etc/redis/users.acl &&
@@ -30,13 +30,15 @@ services:
         redis-server /usr/local/etc/redis/redis.conf --aclfile /usr/local/etc/redis/users.acl
       '
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "$REDIS_PASSWORD", "ping"]
+      test: ["CMD", "redis-cli", "--user", "$REDIS_USER", "--pass", "$REDIS_USER_PASSWORD", "ping"]
       interval: 30s
       timeout: 10s
       retries: 5
     restart: unless-stopped
     tty: true
     stdin_open: true
+    networks:
+      - backend
 
   rabbitmq:
     image: rabbitmq:3.13-management
@@ -124,7 +126,7 @@ services:
       - RABBITMQ_VHOST=${RABBITMQ_VHOST}
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DEFAULT_PASSWORD=${REDIS_DEFAULT_PASSWORD}
       - REDIS_USER=${REDIS_USER}
       - REDIS_USER_PASSWORD=${REDIS_USER_PASSWORD}
       - POSTGRES_URL=${POSTGRES_URL}
@@ -141,10 +143,10 @@ services:
       - backend
 
 
-
 networks:
   backend:
     driver: bridge
+
 
 volumes:
   redis_data:

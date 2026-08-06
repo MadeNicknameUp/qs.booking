@@ -19,9 +19,9 @@ public class BookingController {
 
     private final BookingService bookingService;
 
-    @GetMapping("/{account_id}")
+    @GetMapping("/history/{account_id}")
     public ResponseEntity<List<BookingResponseDto>> getBookingHistory(
-            @PathVariable UUID accountId,
+            @PathVariable(name="account_id") UUID accountId,
             @RequestParam(name="page_number") Integer pageNumber,
             @RequestParam(name="page_size") Integer pageSize
     ) {
@@ -30,21 +30,21 @@ public class BookingController {
     }
 
     @GetMapping("/{booking_id}")
-    public ResponseEntity<BookingResponseDto> fetchBooking(@PathVariable UUID bookingId) {
+    public ResponseEntity<BookingResponseDto> fetchBooking(@PathVariable(name="booking_id") UUID bookingId) {
 
         return ResponseEntity.ok(bookingService.fetchBooking(bookingId));
     }
 
-    @PostMapping("/{account_id}")
-    public ResponseEntity<BookingResponseDto> createBooking(@RequestBody BookingRequestDto bookingRequestDto) {
+    @PostMapping
+    public HttpStatus createBooking(@RequestBody BookingRequestDto bookingRequestDto) {
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(bookingService.createBooking(bookingRequestDto));
+        bookingService.orderBooking(bookingRequestDto);
+
+        return HttpStatus.OK;
     }
 
     @DeleteMapping("/{booking_id}")
-    public HttpStatus deleteAccount(@PathVariable UUID bookingId) {
+    public HttpStatus deleteAccount(@PathVariable(name="booking_id") UUID bookingId) {
 
         bookingService.deleteBooking(bookingId);
 

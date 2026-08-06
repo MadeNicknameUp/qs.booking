@@ -1,6 +1,7 @@
 package com.qs.booking.api.configuration;
 
 import com.qs.booking.store.model.Event;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.time.Duration;
 
 @Configuration
+@Slf4j
 public class RedisConfig {
 
     @Value("${redis.host}")
@@ -42,6 +44,7 @@ public class RedisConfig {
         redisStandaloneConfiguration.setUsername(username);
         redisStandaloneConfiguration.setPassword(password);
 
+        log.info("user=[{}] len={}", username, password);
 
         return new LettuceConnectionFactory(redisStandaloneConfiguration, clientConfig);
     }

@@ -3,12 +3,11 @@ package com.qs.booking.api.service;
 import com.qs.booking.api.dto.external.BookingRequestDto;
 import com.qs.booking.api.dto.external.BookingResponseDto;
 import com.qs.booking.api.error.unit.BookingNotFoundException;
+import com.qs.booking.api.error.unit.InvalidCreationRequestException;
 import com.qs.booking.api.mapper.BookingDtoMapper;
-import com.qs.booking.store.model.Account;
-import com.qs.booking.store.model.Booking;
-import com.qs.booking.store.model.BookingState;
-import com.qs.booking.store.model.SpotState;
+import com.qs.booking.store.model.*;
 import com.qs.booking.store.repository.BookingRepository;
+import com.qs.booking.store.repository.SpotRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,19 +24,20 @@ import java.util.UUID;
 public class BookingService {
 
     private final BookingRepository bookingRepository;
+    private final SpotRepository spotRepository;
     private final AccountService accountService;
     private final BookingDtoMapper bookingDtoMapper;
+    private final BookingProducer bookingProducer;
 
     public List<BookingResponseDto> getBookingHistory(UUID accountId, Integer pageNumber, Integer pageSize) {
 
         // TODO: Replace with gRPC later on.
-
         Account fetchedAccount = accountService.internalFetchAccount(accountId)
                 .orElseThrow(() -> new InvalidParameterException("Operation cannot be finished: Invalid account id."));
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        Page<Booking> bookingHistory = bookingRepository.findAllByPurchaser(fetchedAccount, pageable);
+        Page<Booking> bookingHistory = bookingRepository.findAllByPurchaserId(fetchedAccount.getId(), pageable);
 
         return bookingHistory
                 .stream()
@@ -53,19 +53,16 @@ public class BookingService {
         return bookingDtoMapper.toDto(fetchedBooking);
     }
 
-    @Transactional
-    public BookingResponseDto createBooking(BookingRequestDto bookingRequestDto) {
+    public void orderBooking(BookingRequestDto bookingRequestDto) {
 
-        Booking mappedBooking = bookingDtoMapper.toEntity(bookingRequestDto);
+        UUID spotId = UUID.fromString(bookingRequestDto.getSpotId());
 
-        mappedBooking.setState(BookingState.PROCESSING);
-        mappedBooking.getSpot().setState(SpotState.PENDING);
+        Spot spot = spotRepository.findById(spotId)
+                .orElseThrow(() -> new InvalidCreationRequestException("Spot with id: %s not found.".formatted(spotId)));
 
-        final Booking createdBooking = bookingRepository.save(mappedBooking);
+        spot.setState(SpotState.PENDING);
 
-        // TODO: This is a provider. This methods is going to be posting into the queue.
-
-        return bookingDtoMapper.toDto(createdBooking);
+        bookingProducer.postOrder(bookingRequestDto);
     }
 
     @Transactional

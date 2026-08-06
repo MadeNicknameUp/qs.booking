@@ -36,9 +36,8 @@ public class Event {
     @Column(nullable = false)
     private Instant endingDate;
 
-    @OneToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH })
-    @JoinColumn(name="author_id", referencedColumnName = "id")
-    private Account author;
+    @Column(nullable = false, updatable = false)
+    private UUID authorId;
 
     @Column(nullable = false)
     private Integer spotsAmount;

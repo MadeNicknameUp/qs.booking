@@ -4,13 +4,13 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class InvalidAccountEntryException extends RuntimeException {
+public class InvalidCreationRequestException extends RuntimeException {
 
     private final Integer code;
 
     private final String message;
 
-    public InvalidAccountEntryException(String message) {
+    public InvalidCreationRequestException(String message) {
         super(message);
         this.message = message;
         this.code = HttpStatus.BAD_REQUEST.value();
