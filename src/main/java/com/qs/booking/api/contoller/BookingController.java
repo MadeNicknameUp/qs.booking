@@ -35,10 +35,10 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.fetchBooking(bookingId));
     }
 
-    @PostMapping
-    public HttpStatus createBooking(@RequestBody BookingRequestDto bookingRequestDto) {
+    @PostMapping("/{account_id}")
+    public HttpStatus createBooking(@PathVariable(name="account_id") UUID accountId, @RequestBody BookingRequestDto bookingRequestDto) {
 
-        bookingService.orderBooking(bookingRequestDto);
+        bookingService.orderBooking(accountId, bookingRequestDto);
 
         return HttpStatus.OK;
     }

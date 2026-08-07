@@ -1,15 +1,15 @@
 package com.qs.booking.api.service;
 
-import com.qs.booking.api.dto.external.BookingRequestDto;
+import com.qs.booking.api.dto.interservice.BookingOrderDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
-@RequiredArgsConstructor
 @Slf4j
+@Component
+@RequiredArgsConstructor
 public class BookingProducer {
 
     private final RabbitTemplate rabbitTemplate;
@@ -20,14 +20,14 @@ public class BookingProducer {
     @Value("${rabbitmq.exchange.name}")
     private String exchange;
 
-    public void postOrder(BookingRequestDto bookingRequestDto) {
+    public void postOrder(BookingOrderDto bookingOrderDto) {
         log.info(
-                "Sending new Order with key: {} for spot with id: {}.",
-                bookingRequestDto.getIdempotencyKey(),
-                bookingRequestDto.getSpotId()
+                "Sending new Booking with key: {} for spot with id: {}.",
+                bookingOrderDto.getIdempotencyKey(),
+                bookingOrderDto.getSpotId()
         );
 
-        rabbitTemplate.convertAndSend(exchange, routingKey, bookingRequestDto);
+        rabbitTemplate.convertAndSend(exchange, routingKey, bookingOrderDto);
     }
 
 }

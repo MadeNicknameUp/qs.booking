@@ -53,7 +53,7 @@ public class BookingService {
         return bookingDtoMapper.toDto(fetchedBooking);
     }
 
-    public void orderBooking(BookingRequestDto bookingRequestDto) {
+    public void orderBooking(UUID accountId, BookingRequestDto bookingRequestDto) {
 
         UUID spotId = UUID.fromString(bookingRequestDto.getSpotId());
 
@@ -62,7 +62,7 @@ public class BookingService {
 
         spot.setState(SpotState.PENDING);
 
-        bookingProducer.postOrder(bookingRequestDto);
+        bookingProducer.postOrder(bookingDtoMapper.toDto(accountId, bookingRequestDto));
     }
 
     @Transactional

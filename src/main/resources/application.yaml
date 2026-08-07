@@ -21,11 +21,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 redis:
-#  host: "localhost"
-#  port: 6380
-#  username: "application"
-#  #   TODO: Replace with injecting once tested.
-#  password: "application"
   host: ${REDIS_HOST}
   port: ${REDIS_PORT}
   username: ${REDIS_USER}
@@ -33,11 +28,6 @@ redis:
 
 rabbitmq:
   config:
-#    host: "localhost"
-#    port: 5672
-#    username: "admin"
-#    password: "admin"
-#    virtual-host: "/dev"
     host: ${RABBITMQ_HOST}
     port: ${RABBITMQ_PORT}
     username: ${RABBITMQ_USER}
@@ -51,5 +41,9 @@ rabbitmq:
     name: "booking-order"
     routing:
       key: "place-booking-order"
+  notification-queue:
+    name: "notification-order"
+    routing:
+      key: "place-notification-order"
   exchange:
     name: "main-exchange"

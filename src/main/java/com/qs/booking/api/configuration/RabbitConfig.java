@@ -1,6 +1,7 @@
 package com.qs.booking.api.configuration;
 
-import com.qs.booking.api.dto.external.BookingRequestDto;
+import com.qs.booking.api.dto.external.BookingResponseDto;
+import com.qs.booking.api.dto.interservice.BookingOrderDto;
 import com.qs.booking.api.dto.interservice.SpotOrderDto;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -20,13 +21,25 @@ import java.util.Map;
 public class RabbitConfig {
 
     @Value("${rabbitmq.spot-queue.name}")
-    private String queue;
+    private String spotOrderQueueName;
+
+    @Value("${rabbitmq.booking-queue.name}")
+    private String bookingOrderQueueName;
+
+    @Value("${rabbitmq.notification-queue.name}")
+    private String notificationOrderQueueName;
 
     @Value("${rabbitmq.spot-queue.routing.key}")
-    private String routingKey;
+    private String spotQueueRoutingKey;
+
+    @Value("${rabbitmq.booking-queue.routing.key}")
+    private String bookingQueueRoutingKey;
+
+    @Value("${rabbitmq.notification-queue.routing.key}")
+    private String notificationQueueRoutingKey;
 
     @Value("${rabbitmq.exchange.name}")
-    private String exchange;
+    private String exchangeName;
 
     @Value("${rabbitmq.config.host}")
     private String host;
@@ -45,21 +58,35 @@ public class RabbitConfig {
 
     @Bean
     public Queue queue() {
-        return new Queue(queue, true);
+        return new Queue(spotOrderQueueName, true);
     }
+
+    @Bean
+    public Declarables bookingDeclarables(DirectExchange exchange) {
+        Queue spotOrderQueue = new Queue(spotOrderQueueName, true);
+        Queue bookingOrderQueue = new Queue(bookingOrderQueueName, true);
+        Queue notificationOrderQueue = new Queue(notificationOrderQueueName, true);
+
+        return new Declarables(
+                spotOrderQueue,
+                bookingOrderQueue,
+                notificationOrderQueue,
+                BindingBuilder.bind(spotOrderQueue)
+                        .to(exchange())
+                        .with(spotQueueRoutingKey),
+                BindingBuilder.bind(bookingOrderQueue)
+                        .to(exchange())
+                        .with(bookingQueueRoutingKey),
+                BindingBuilder.bind(notificationOrderQueue)
+                        .to(exchange())
+                        .with(notificationQueueRoutingKey)
+        );
+    }
+
 
     @Bean
     public DirectExchange exchange() {
-        return new DirectExchange(exchange);
-    }
-
-    @Bean
-    public Binding binding(Queue queue, DirectExchange exchange) {
-        // Simple routing (Router = Exchange, Queue = destination, routingKey = path)
-        return BindingBuilder
-                .bind(queue)
-                .to(exchange)
-                .with(routingKey);
+        return new DirectExchange(exchangeName);
     }
 
     @Bean
@@ -109,7 +136,8 @@ public class RabbitConfig {
 
         mapper.setIdClassMapping(Map.of(
                 "SpotOrderDto", SpotOrderDto.class,
-                "BookingRequestDto", BookingRequestDto.class
+                "BookingOrderDto", BookingOrderDto.class,
+                "BookingResponseDto", BookingResponseDto.class
         ));
 
         converter.setJavaTypeMapper(mapper);

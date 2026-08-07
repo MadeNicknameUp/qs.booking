@@ -44,8 +44,6 @@ public class RedisConfig {
         redisStandaloneConfiguration.setUsername(username);
         redisStandaloneConfiguration.setPassword(password);
 
-        log.info("user=[{}] len={}", username, password);
-
         return new LettuceConnectionFactory(redisStandaloneConfiguration, clientConfig);
     }
 
