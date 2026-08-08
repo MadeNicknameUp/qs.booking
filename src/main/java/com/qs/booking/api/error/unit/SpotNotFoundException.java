@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class SpotNotFoundException extends CustomNotFoundException {
 
-    public SpotNotFoundException(String message) {
-        super(message);
+    public SpotNotFoundException(String message, String path) {
+        super(message, path);
     }
 }

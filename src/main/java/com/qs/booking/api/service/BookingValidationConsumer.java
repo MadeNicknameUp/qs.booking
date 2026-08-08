@@ -34,8 +34,13 @@ public class BookingValidationConsumer {
 
         log.info("Received Order Message from spot-queue: " + bookingOrderDto);
 
+        String errorPath = String.format("api/v1/bookings/%s", bookingOrderDto.getPurchaserId());
+
         Spot orderedSpot = spotRepository.findById(bookingOrderDto.getSpotId())
-                .orElseThrow(() -> new SpotNotFoundException("Spot with id: %s not found.".formatted(bookingOrderDto.getSpotId())));
+                .orElseThrow(() -> new SpotNotFoundException(
+                        "Spot with id: %s not found.".formatted(bookingOrderDto.getSpotId()),
+                        errorPath
+                ));
 
         boolean isBooked = orderedSpot.getState().equals(SpotState.BOOKED);
 
@@ -44,7 +49,7 @@ public class BookingValidationConsumer {
             return;
         }
 
-        Booking booking = bookingDtoMapper.toEntity(bookingOrderDto);
+        Booking booking = bookingDtoMapper.toEntity(bookingOrderDto, errorPath);
         booking.setState(isBooked ? BookingState.REJECTED : BookingState.ACCEPTED);
         booking.setProcessedAt(Instant.now());
 

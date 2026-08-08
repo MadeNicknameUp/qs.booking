@@ -105,7 +105,7 @@ public class EventService {
     @Transactional
     public EventResponseDto updateEvent(UUID eventId, EventPatchDto eventPatchDto) {
 
-        String errorPath = String.format("/api/v1/events/%s", eventId);
+        String errorPath = String.format("api/v1/events/%s", eventId);
 
         Event fetchedEvent = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(

@@ -41,26 +41,32 @@ public class BookingDtoMapper {
     }
 
     // TODO: Evaluate practical use of this method.
-    public Booking toEntity(BookingPostDto bookingPostDto) {
+    public Booking toEntity(BookingPostDto bookingPostDto, String errorPath) {
 
         Booking booking = new Booking();
         booking.setState(BookingState.PROCESSING);
         booking.setIdempotencyKey(UUID.fromString(bookingPostDto.getIdempotencyKey()));
         booking.setSpot(spotRepository.findById(UUID.fromString(bookingPostDto.getSpotId()))
-                .orElseThrow(() -> new SpotNotFoundException("Spot with id %s not found.".formatted(bookingPostDto.getSpotId())))
+                .orElseThrow(() -> new SpotNotFoundException(
+                        "Spot with id %s not found.".formatted(bookingPostDto.getSpotId()),
+                        errorPath
+                ))
         );
 
         return booking;
     }
 
-    public Booking toEntity(BookingOrderDto bookingOrderDto) {
+    public Booking toEntity(BookingOrderDto bookingOrderDto, String errorPath) {
 
         Booking booking = new Booking();
         booking.setState(BookingState.PROCESSING);
         booking.setIdempotencyKey(bookingOrderDto.getIdempotencyKey());
         booking.setPurchaserId(bookingOrderDto.getPurchaserId());
         booking.setSpot(spotRepository.findById(bookingOrderDto.getSpotId())
-                .orElseThrow(() -> new SpotNotFoundException("Spot with id %s not found.".formatted(bookingOrderDto.getSpotId())))
+                .orElseThrow(() -> new SpotNotFoundException(
+                        "Spot with id %s not found.".formatted(bookingOrderDto.getSpotId()),
+                        errorPath
+                ))
         );
 
         return booking;

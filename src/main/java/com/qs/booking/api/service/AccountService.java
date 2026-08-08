@@ -52,7 +52,7 @@ public class AccountService {
     @Transactional
     public AccountResponseDto updateAccount(UUID accountId, AccountPatchDto accountPatchDto) {
 
-        String errorPath = String.format("/api/v1/accounts/%s", accountId);
+        String errorPath = String.format("api/v1/accounts/%s", accountId);
 
         Account fetchedAccount = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(
