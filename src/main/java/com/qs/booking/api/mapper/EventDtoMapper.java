@@ -6,8 +6,6 @@ import com.qs.booking.store.model.Event;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-
 @Component
 @RequiredArgsConstructor
 public class EventDtoMapper {
@@ -35,8 +33,8 @@ public class EventDtoMapper {
         event.setPictureUrl(eventPostDto.getPictureUrl());
         event.setName(eventPostDto.getName());
         event.setDescription(eventPostDto.getDescription());
-        event.setStartingDate(Instant.parse(eventPostDto.getStartingDate()));
-        event.setEndingDate(Instant.parse(eventPostDto.getEndingDate()));
+        event.setStartingDate(eventPostDto.getStartingDate());
+        event.setEndingDate(eventPostDto.getEndingDate());
         event.setSpotsAmount(eventPostDto.getSpotsAmount());
 
         return event;

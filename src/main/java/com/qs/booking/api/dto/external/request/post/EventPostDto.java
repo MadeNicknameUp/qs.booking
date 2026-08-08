@@ -1,6 +1,5 @@
 package com.qs.booking.api.dto.external.request.post;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.qs.booking.api.validation.ValidEventDates;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -26,17 +25,16 @@ public class EventPostDto {
     @Size(max= 2000)
     private String description;
 
-    @NotBlank
+    @NotNull
     @FutureOrPresent
     private Instant startingDate;
 
-    @NotBlank
+    @NotNull
     @Future
     private Instant endingDate;
 
     @NotNull
     @Min(4)
-    @JsonFormat()
     private Integer spotsAmount;
 
     @NotNull

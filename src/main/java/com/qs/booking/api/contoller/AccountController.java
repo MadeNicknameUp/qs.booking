@@ -4,6 +4,7 @@ import com.qs.booking.api.dto.external.request.patch.AccountPatchDto;
 import com.qs.booking.api.dto.external.request.post.AccountPostDto;
 import com.qs.booking.api.dto.external.response.AccountResponseDto;
 import com.qs.booking.api.service.AccountService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +20,13 @@ public class AccountController {
     private final AccountService accountService;
 
     @GetMapping("/{account_id}")
-    public ResponseEntity<AccountResponseDto> fetchAccount(@PathVariable UUID accountId) {
+    public ResponseEntity<AccountResponseDto> fetchAccount(@PathVariable(name= "account_id") UUID accountId) {
 
         return ResponseEntity.ok(accountService.fetchAccount(accountId));
     }
 
     @PostMapping
-    public ResponseEntity<AccountResponseDto> createAccount(@RequestBody AccountPostDto accountPostDto) {
+    public ResponseEntity<AccountResponseDto> createAccount(@Valid @RequestBody AccountPostDto accountPostDto) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -33,7 +34,7 @@ public class AccountController {
     }
 
     @PatchMapping("/{account_id}")
-    public ResponseEntity<AccountResponseDto> createAccount(@PathVariable UUID accountId, @RequestBody AccountPatchDto accountPatchDto) {
+    public ResponseEntity<AccountResponseDto> createAccount(@PathVariable(name= "account_id") UUID accountId,@RequestBody AccountPatchDto accountPatchDto) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -41,7 +42,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/{account_id}")
-    public ResponseEntity<Void> deleteAccount(@PathVariable UUID accountId) {
+    public ResponseEntity<Void> deleteAccount(@PathVariable(name= "account_id") UUID accountId) {
 
         accountService.deleteAccount(accountId);
 

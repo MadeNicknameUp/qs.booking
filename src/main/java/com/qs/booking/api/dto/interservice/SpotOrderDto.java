@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
@@ -13,7 +14,7 @@ public class SpotOrderDto {
 
     private Integer spotsInToTal;
 
-    private Double pricePerSpot;
+    private BigDecimal pricePerSpot;
 
     private UUID eventId;
 }

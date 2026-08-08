@@ -1,15 +1,14 @@
 package com.qs.booking.api.dto.external.request.post;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
-@Data
 @Getter
-@AllArgsConstructor
 public class BookingPostDto {
 
+    @NotBlank
     private String spotId;
 
+    @NotBlank
     private String idempotencyKey;
 }

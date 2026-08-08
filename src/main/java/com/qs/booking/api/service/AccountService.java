@@ -11,7 +11,6 @@ import com.qs.booking.store.repository.AccountRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.Optional;
 import java.util.UUID;

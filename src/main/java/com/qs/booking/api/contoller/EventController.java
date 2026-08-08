@@ -4,6 +4,7 @@ import com.qs.booking.api.dto.external.request.patch.EventPatchDto;
 import com.qs.booking.api.dto.external.request.post.EventPostDto;
 import com.qs.booking.api.dto.external.response.EventResponseDto;
 import com.qs.booking.api.service.EventService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class EventController {
 
     @PostMapping("/{account_id}")
     public ResponseEntity<EventResponseDto> createEvent(@PathVariable(name="account_id") UUID accountId,
-                                                        @RequestBody EventPostDto eventPostDto) {
+                                                        @Valid @RequestBody EventPostDto eventPostDto) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(eventService.createEvent(accountId, eventPostDto));

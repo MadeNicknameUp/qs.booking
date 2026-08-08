@@ -13,6 +13,7 @@ import com.qs.booking.store.model.Event;
 import com.qs.booking.store.repository.EventRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EventService {
 
     private final EventRepository eventRepository;
@@ -93,6 +95,8 @@ public class EventService {
 
         Event mappedEvent = eventDtoMapper.toEntity(eventPostDto);
         mappedEvent.setAuthorId(fetchedAccount.getId());
+
+        log.info("HERE ENDING DATE IS" + eventPostDto.getEndingDate());
 
         final Event savedEvent = eventRepository.saveAndFlush(mappedEvent);
 
