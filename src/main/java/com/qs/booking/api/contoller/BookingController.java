@@ -1,11 +1,10 @@
 package com.qs.booking.api.contoller;
 
-import com.qs.booking.api.dto.external.BookingRequestDto;
-import com.qs.booking.api.dto.external.BookingResponseDto;
+import com.qs.booking.api.dto.external.request.post.BookingPostDto;
+import com.qs.booking.api.dto.external.response.BookingResponseDto;
 import com.qs.booking.api.service.BookingService;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,18 +35,18 @@ public class BookingController {
     }
 
     @PostMapping("/{account_id}")
-    public HttpStatus createBooking(@PathVariable(name="account_id") UUID accountId, @RequestBody BookingRequestDto bookingRequestDto) {
+    public ResponseEntity<Void> createBooking(@PathVariable(name="account_id") UUID accountId, @RequestBody BookingPostDto bookingPostDto) {
 
-        bookingService.orderBooking(accountId, bookingRequestDto);
+        bookingService.orderBooking(accountId, bookingPostDto);
 
-        return HttpStatus.OK;
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{booking_id}")
-    public HttpStatus deleteAccount(@PathVariable(name="booking_id") UUID bookingId) {
+    public ResponseEntity<Void> deleteAccount(@PathVariable(name="booking_id") UUID bookingId) {
 
         bookingService.deleteBooking(bookingId);
 
-        return HttpStatus.OK;
+        return ResponseEntity.noContent().build();
     }
 }

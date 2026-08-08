@@ -2,10 +2,10 @@ spring:
   application:
     name: booking
 
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
   datasource:
-#    url: "jdbc:postgresql://localhost:5432/test-db"
-#    username: "admin"
-#    password: "admin"
     url: ${POSTGRES_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}

@@ -1,9 +1,9 @@
 package com.qs.booking.api.service;
 
-import com.qs.booking.api.dto.external.BookingRequestDto;
-import com.qs.booking.api.dto.external.BookingResponseDto;
+import com.qs.booking.api.dto.external.request.post.BookingPostDto;
+import com.qs.booking.api.dto.external.response.BookingResponseDto;
 import com.qs.booking.api.error.unit.BookingNotFoundException;
-import com.qs.booking.api.error.unit.InvalidCreationRequestException;
+import com.qs.booking.api.error.unit.InvalidParameterException;
 import com.qs.booking.api.mapper.BookingDtoMapper;
 import com.qs.booking.store.model.*;
 import com.qs.booking.store.repository.BookingRepository;
@@ -15,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,7 +32,7 @@ public class BookingService {
 
         // TODO: Replace with gRPC later on.
         Account fetchedAccount = accountService.internalFetchAccount(accountId)
-                .orElseThrow(() -> new InvalidParameterException("Operation cannot be finished: Invalid account id."));
+                .orElseThrow(() -> new java.security.InvalidParameterException("Operation cannot be finished: Invalid account id."));
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
@@ -48,28 +47,37 @@ public class BookingService {
     public BookingResponseDto fetchBooking(UUID bookingId) {
 
         Booking fetchedBooking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new BookingNotFoundException("Booking with id: %s not found.".formatted(bookingId)));
+                .orElseThrow(() -> new BookingNotFoundException(
+                        "Booking with id: %s not found.".formatted(bookingId),
+                        "/api/v1/bookings/%s".formatted(bookingId)
+                ));
 
         return bookingDtoMapper.toDto(fetchedBooking);
     }
 
-    public void orderBooking(UUID accountId, BookingRequestDto bookingRequestDto) {
+    public void orderBooking(UUID accountId, BookingPostDto bookingPostDto) {
 
-        UUID spotId = UUID.fromString(bookingRequestDto.getSpotId());
+        UUID spotId = UUID.fromString(bookingPostDto.getSpotId());
 
         Spot spot = spotRepository.findById(spotId)
-                .orElseThrow(() -> new InvalidCreationRequestException("Spot with id: %s not found.".formatted(spotId)));
+                .orElseThrow(() -> new InvalidParameterException(
+                        "Spot with id: %s not found.".formatted(spotId),
+                        "/api/v1/bookings/%s".formatted(accountId)
+                ));
 
         spot.setState(SpotState.PENDING);
 
-        bookingProducer.postOrder(bookingDtoMapper.toDto(accountId, bookingRequestDto));
+        bookingProducer.postOrder(bookingDtoMapper.toDto(accountId, bookingPostDto));
     }
 
     @Transactional
     public void deleteBooking(UUID bookingId) {
 
         Booking fetchedBooking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new BookingNotFoundException("Booking with id: %s not found.".formatted(bookingId)));
+                .orElseThrow(() -> new BookingNotFoundException(
+                        "Booking with id: %s not found.".formatted(bookingId),
+                        "/api/v1/bookings/%s".formatted(bookingId)
+                ));
 
         bookingRepository.delete(fetchedBooking);
     }

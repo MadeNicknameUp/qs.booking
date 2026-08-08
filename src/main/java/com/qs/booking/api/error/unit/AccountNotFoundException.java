@@ -1,18 +1,8 @@
 package com.qs.booking.api.error.unit;
 
-import lombok.Getter;
-import org.springframework.http.HttpStatus;
+public class AccountNotFoundException extends CustomNotFoundException {
 
-@Getter
-public class AccountNotFoundException extends RuntimeException {
-
-    private final Integer code;
-
-    private final String message;
-
-    public AccountNotFoundException(String message) {
-        super(message);
-        this.message = message;
-        this.code = HttpStatus.NOT_FOUND.value();
+    public AccountNotFoundException(String message, String path) {
+        super(message, path);
     }
 }

@@ -1,7 +1,7 @@
 package com.qs.booking.api.mapper;
 
-import com.qs.booking.api.dto.external.EventRequestDto;
-import com.qs.booking.api.dto.external.EventResponseDto;
+import com.qs.booking.api.dto.external.request.post.EventPostDto;
+import com.qs.booking.api.dto.external.response.EventResponseDto;
 import com.qs.booking.store.model.Event;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -29,15 +29,15 @@ public class EventDtoMapper {
                 .build();
     }
 
-    public Event toEntity(EventRequestDto eventRequestDto) {
+    public Event toEntity(EventPostDto eventPostDto) {
 
         Event event = new Event();
-        event.setPictureUrl(eventRequestDto.getPictureUrl());
-        event.setName(eventRequestDto.getName());
-        event.setDescription(eventRequestDto.getDescription());
-        event.setStartingDate(Instant.parse(eventRequestDto.getStartingDate()));
-        event.setEndingDate(Instant.parse(eventRequestDto.getEndingDate()));
-        event.setSpotsAmount(eventRequestDto.getSpotsAmount());
+        event.setPictureUrl(eventPostDto.getPictureUrl());
+        event.setName(eventPostDto.getName());
+        event.setDescription(eventPostDto.getDescription());
+        event.setStartingDate(Instant.parse(eventPostDto.getStartingDate()));
+        event.setEndingDate(Instant.parse(eventPostDto.getEndingDate()));
+        event.setSpotsAmount(eventPostDto.getSpotsAmount());
 
         return event;
     }

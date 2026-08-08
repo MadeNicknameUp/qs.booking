@@ -1,7 +1,7 @@
 package com.qs.booking.api.mapper;
 
-import com.qs.booking.api.dto.external.BookingRequestDto;
-import com.qs.booking.api.dto.external.BookingResponseDto;
+import com.qs.booking.api.dto.external.request.post.BookingPostDto;
+import com.qs.booking.api.dto.external.response.BookingResponseDto;
 import com.qs.booking.api.dto.interservice.BookingOrderDto;
 import com.qs.booking.api.error.unit.SpotNotFoundException;
 import com.qs.booking.store.model.Booking;
@@ -30,24 +30,24 @@ public class BookingDtoMapper {
                 .build();
     }
 
-    public BookingOrderDto toDto(UUID accountId, BookingRequestDto bookingRequestDto) {
+    public BookingOrderDto toDto(UUID accountId, BookingPostDto bookingPostDto) {
 
         return BookingOrderDto
                 .builder()
                 .purchaserId(accountId)
-                .spotId(UUID.fromString(bookingRequestDto.getSpotId()))
-                .idempotencyKey(UUID.fromString(bookingRequestDto.getIdempotencyKey()))
+                .spotId(UUID.fromString(bookingPostDto.getSpotId()))
+                .idempotencyKey(UUID.fromString(bookingPostDto.getIdempotencyKey()))
                 .build();
     }
 
     // TODO: Evaluate practical use of this method.
-    public Booking toEntity(BookingRequestDto bookingRequestDto) {
+    public Booking toEntity(BookingPostDto bookingPostDto) {
 
         Booking booking = new Booking();
         booking.setState(BookingState.PROCESSING);
-        booking.setIdempotencyKey(UUID.fromString(bookingRequestDto.getIdempotencyKey()));
-        booking.setSpot(spotRepository.findById(UUID.fromString(bookingRequestDto.getSpotId()))
-                .orElseThrow(() -> new SpotNotFoundException("Spot with id %s not found.".formatted(bookingRequestDto.getSpotId())))
+        booking.setIdempotencyKey(UUID.fromString(bookingPostDto.getIdempotencyKey()));
+        booking.setSpot(spotRepository.findById(UUID.fromString(bookingPostDto.getSpotId()))
+                .orElseThrow(() -> new SpotNotFoundException("Spot with id %s not found.".formatted(bookingPostDto.getSpotId())))
         );
 
         return booking;

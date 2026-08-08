@@ -1,13 +1,13 @@
 package com.qs.booking.api.contoller;
 
-import com.qs.booking.api.dto.external.AccountRequestDto;
-import com.qs.booking.api.dto.external.AccountResponseDto;
+import com.qs.booking.api.dto.external.request.patch.AccountPatchDto;
+import com.qs.booking.api.dto.external.request.post.AccountPostDto;
+import com.qs.booking.api.dto.external.response.AccountResponseDto;
 import com.qs.booking.api.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tools.jackson.databind.JsonNode;
 
 import java.util.UUID;
 
@@ -25,26 +25,26 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<AccountResponseDto> createAccount(@RequestBody AccountRequestDto accountRequestDto) {
+    public ResponseEntity<AccountResponseDto> createAccount(@RequestBody AccountPostDto accountPostDto) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(accountService.createAccount(accountRequestDto));
+                .body(accountService.createAccount(accountPostDto));
     }
 
     @PatchMapping("/{account_id}")
-    public ResponseEntity<AccountResponseDto> createAccount(@PathVariable UUID accountId, @RequestBody JsonNode accountRequestDto) {
+    public ResponseEntity<AccountResponseDto> createAccount(@PathVariable UUID accountId, @RequestBody AccountPatchDto accountPatchDto) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(accountService.updateAccount(accountId, accountRequestDto));
+                .body(accountService.updateAccount(accountId, accountPatchDto));
     }
 
     @DeleteMapping("/{account_id}")
-    public HttpStatus deleteAccount(@PathVariable UUID accountId) {
+    public ResponseEntity<Void> deleteAccount(@PathVariable UUID accountId) {
 
         accountService.deleteAccount(accountId);
 
-        return HttpStatus.OK;
+        return ResponseEntity.noContent().build();
     }
 }

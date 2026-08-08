@@ -36,7 +36,7 @@ public class EventCaching {
 
         String key = PAGE_KEY_PREFIX + pageNumber;
         hashOps.putAll(key, events);
-        redisTemplate.expire(key, Duration.ofSeconds(60));
+        redisTemplate.expire(key, Duration.ofSeconds(60)); // TODO: Fix cache eviction.
     }
 
     public List<Event> getFeed(Integer pageNumber) {

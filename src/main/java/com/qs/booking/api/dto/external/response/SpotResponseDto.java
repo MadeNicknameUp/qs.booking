@@ -1,4 +1,4 @@
-package com.qs.booking.api.dto.external;
+package com.qs.booking.api.dto.external.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

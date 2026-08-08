@@ -1,6 +1,7 @@
 package com.qs.booking.store.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +27,7 @@ public class Account {
     private String profilePictureUrl;
 
     @Column(nullable=false, unique=true)
+    @NotBlank(message="Email is mandatory")
     private String email;
 
     private String firstName;
@@ -33,9 +35,11 @@ public class Account {
     private String lastName;
 
     @Column(nullable=false)
+    @NotBlank(message="Nickname is mandatory")
     private String nickname;
 
     @Column(nullable=false)
+    @NotBlank(message="Password is mandatory")
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "account")

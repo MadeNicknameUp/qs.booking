@@ -1,6 +1,6 @@
 package com.qs.booking.api.configuration;
 
-import com.qs.booking.api.dto.external.BookingResponseDto;
+import com.qs.booking.api.dto.external.response.BookingResponseDto;
 import com.qs.booking.api.dto.interservice.BookingOrderDto;
 import com.qs.booking.api.dto.interservice.SpotOrderDto;
 import org.springframework.amqp.core.*;
