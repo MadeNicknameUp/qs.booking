@@ -4,12 +4,10 @@ import com.qs.booking.api.dto.external.request.post.AccountPostDto;
 import com.qs.booking.api.dto.external.response.AccountResponseDto;
 import com.qs.booking.api.error.unit.InvalidParameterException;
 import com.qs.booking.store.model.Account;
-import org.springframework.stereotype.Component;
 
-@Component
 public class AccountDtoMapper {
 
-    public AccountResponseDto toDto(Account account) {
+    public static AccountResponseDto toDto(Account account) {
 
         return AccountResponseDto
                 .builder()
@@ -25,7 +23,7 @@ public class AccountDtoMapper {
                 .build();
     }
 
-    public Account toEntity(AccountPostDto accountDto, String errorPath) {
+    public static Account toEntity(AccountPostDto accountDto, String errorPath) {
 
         Account account = new Account();
 

@@ -30,7 +30,7 @@ public class BookingService {
 
     public List<BookingResponseDto> getBookingHistory(UUID accountId, Integer pageNumber, Integer pageSize) {
 
-        // TODO: Replace with gRPC later on.
+        // TODO: Just use JWT tokens once I add them.
         Account fetchedAccount = accountService.internalFetchAccount(accountId)
                 .orElseThrow(() -> new java.security.InvalidParameterException("Operation cannot be finished: Invalid account id."));
 

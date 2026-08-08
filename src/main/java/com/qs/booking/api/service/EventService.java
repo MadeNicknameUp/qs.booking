@@ -32,8 +32,6 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final AccountService accountService;
-    private final EventDtoMapper eventDtoMapper;
-    private final SpotDtoMapper spotDtoMapper;
     private final EventCaching eventCaching;
     private final EventProducer eventProducer;
 
@@ -44,7 +42,7 @@ public class EventService {
         if (!cachedUpcomingEvents.isEmpty()) {
             return cachedUpcomingEvents
                     .stream()
-                    .map(eventDtoMapper::toDto)
+                    .map(EventDtoMapper::toDto)
                     .toList();
         }
 
@@ -61,7 +59,7 @@ public class EventService {
 
         return upcomingEvents
                 .stream()
-                .map(eventDtoMapper::toDto)
+                .map(EventDtoMapper::toDto)
                 .toList();
     }
 
@@ -80,29 +78,27 @@ public class EventService {
             return event;
         });
 
-        return eventDtoMapper.toDto(fetchedEvent);
+        return EventDtoMapper.toDto(fetchedEvent);
     }
 
     @Transactional
     public EventResponseDto createEvent(UUID accountId, EventPostDto eventPostDto) {
 
-        // TODO: replace with gRPC later
+        // TODO: Just use JWT tokens once I add them.
         Account fetchedAccount = accountService.internalFetchAccount(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(
                         "Account with id: %s not found.".formatted(accountId),
                         "/api/v1/events/%s".formatted(accountId)
                 ));
 
-        Event mappedEvent = eventDtoMapper.toEntity(eventPostDto);
+        Event mappedEvent = EventDtoMapper.toEntity(eventPostDto);
         mappedEvent.setAuthorId(fetchedAccount.getId());
-
-        log.info("HERE ENDING DATE IS" + eventPostDto.getEndingDate());
 
         final Event savedEvent = eventRepository.saveAndFlush(mappedEvent);
 
-        eventProducer.postOrder(spotDtoMapper.toInternalDto(savedEvent.getId(), eventPostDto));
+        eventProducer.postOrder(SpotDtoMapper.toInternalDto(savedEvent.getId(), eventPostDto));
 
-        return eventDtoMapper.toDto(savedEvent);
+        return EventDtoMapper.toDto(savedEvent);
     }
 
     // TODO: Notify everyone, who has relevant bookings, about event details update
@@ -123,7 +119,7 @@ public class EventService {
 
         eventCaching.evict(eventId.toString());
 
-        return eventDtoMapper.toDto(savedEvent);
+        return EventDtoMapper.toDto(savedEvent);
     }
 
     public void validatePatchRequest(Event event, EventPatchDto eventPatchDto, String errorPath) {

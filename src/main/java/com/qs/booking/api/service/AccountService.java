@@ -20,7 +20,6 @@ import java.util.UUID;
 public class AccountService {
 
     private final AccountRepository accountRepository;
-    private final AccountDtoMapper accountDtoMapper;
 
     public AccountResponseDto fetchAccount(UUID accountId) {
 
@@ -30,7 +29,7 @@ public class AccountService {
                         "/api/v1/accounts/%s".formatted(accountId)
                 ));
 
-        return accountDtoMapper.toDto(fetchedAccount);
+        return AccountDtoMapper.toDto(fetchedAccount);
     }
 
     public Optional<Account> internalFetchAccount(UUID account_id) {
@@ -41,11 +40,11 @@ public class AccountService {
     @Transactional
     public AccountResponseDto createAccount(AccountPostDto accountDto) {
 
-        Account newAccount = accountDtoMapper.toEntity(accountDto, "api/v1/accounts");
+        Account newAccount = AccountDtoMapper.toEntity(accountDto, "api/v1/accounts");
 
         final Account savedAccount = accountRepository.saveAndFlush(newAccount);
 
-        return accountDtoMapper.toDto(savedAccount);
+        return AccountDtoMapper.toDto(savedAccount);
     }
 
     @Transactional
@@ -63,7 +62,7 @@ public class AccountService {
 
         final Account savedAccount = accountRepository.saveAndFlush(fetchedAccount);
 
-        return accountDtoMapper.toDto(savedAccount);
+        return AccountDtoMapper.toDto(savedAccount);
     }
 
     @Transactional
